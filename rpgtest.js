@@ -1,3 +1,4 @@
+
 const ps = require("prompt-sync");
 const prompt = ps();
 const readline = require('readline');
@@ -6,18 +7,33 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-function saveprogres (player) {
-  if(!player || !player.name){
-    console.log("Нет информаци");
-    return;
-  }
+function ShowPLayer(){
+    console.log("Ура ты создал персонажа")
+    console.log(`Имя ${player.name}`);
+    console.log(`Город ${player.city}`);
+    console.log(`Класс ${player.className}`);
+    console.log(`Лвл ${player.lvl}`);
+    console.log(`Здоровье ${player.hp}`);
+    console.log(`Мана ${player.mana}`);
+    console.log(`Оружие ${player.weapon}`);
 }
+
 let player =  {
     name: "",
     city: "",
-    class: ""
+    class: "",
+    lvl: 1,
+    className: "",
+    hp: 0,
+    damage: 0,
+    armor: 0,           
+    mana: 0,
+    weapon: "",
+    lvl: 1
+
 
 };
+
 function Nachalo() {
     console.log ("Добро пожаловать в мир РПГташкент");
     rl.question("Как же тебя зовут путник? ",function(ans){
@@ -33,6 +49,8 @@ function Gorod (){
     });
     
 }
+
+
 function KakoyClass(){
     console.log("Еще раз приятно познакомится " +player.name +" c "+player.city);
     console.log("Кем же ты хочешь тут быть дорогой "+player.name +"\n1.Лучник\n2.Магом\n3.Воином")
@@ -44,65 +62,77 @@ function KakoyClass(){
         player.class = ans;
         const choise = parseInt(ans,10);
         player.class = choise;
-
-
         switch(choise){
             case 1:
                 console.log("Хороший выбор дорогой друг будешь самым лучшим стрелком");
-                stats = {
-                    className: "Лучник",
-                    hp: 70,
-                    damage: 30,
-                    armor: 3,
-                    mana: 50,
-                    weapon: "Лук",
-                    lvl: 1
-                };
+                    player.className = "Лучник",
+                    player.hp = 70,
+                    player.damage= 30,
+                    player.armor = 3,           
+                    player.mana = 50,
+                    player.weapon = "Лук",
+                    player.lvl = 1
                 break;
             case 2:
                 console.log("Хороший выбор дорогой друг будешь самым лучшим магом");
-                stats = {
-                    className: "Лучник",
-                    hp: 50,
-                    damage: 45,
-                    armor: 2,
-                    mana: 100,
-                    weapon: "ЖезолАлександра 1",
-                    lvl: 1
-                };
+                    player.className = "Маг",
+                    player.hp = 50,
+                    player.damage = 45,
+                    player.armor = 2,
+                    player.mana = 100,
+                    player.weapon = "ЖезолАлександра 1",
+                    player.lvl = 1
                 break;
             case 3:
                 console.log("Хороший выбор дорогой друг будешь самым лучшим Воином")
-                stats = {
-                    className: "Лучник",
-                    hp: 125,
-                    damage: 25,
-                    armor: 8,
-                    mana: 30,
-                    weapon: "Секира",
-                    lvl: 1
-                };
+                    player.className = "Воин",
+                    player.hp =125,
+                    player.damage = 25,
+                    player.armor = 8,
+                    player.mana = 30,
+                    player.weapon = "Секира",
+                    player.lvl = 1
                 break;
             default:
                 console.log("Введите от 1 до 3");
                 break;
         }
+        ShowPLayer();
         Nextstap();
     });
 }
+
+function saveprogres(){
+   const dataString = `Имя ${player.name}Город ${player.city} Класс ${player.className} Здоровье ${player.hp} Урон ${player.damage} Броня ${player.armor} Мана ${player.mana} Оружие ${player.weapon} Левол ${player.lvl}`
+
+    fs.writeFile("saverpg.txt", JSON.stringify(dataString),function(error){
+        if(error){
+            console.log("Ошибка");
+            return;
+        }
+        console.log("Сохранение прошло успешно")
+        const read = fs.readFileSync("saverpg.txt");
+        console.log("Данные в файле ",read.toString());
+        Nextstap();
+    });
+    
+}
+
+
+
 function Nextstap(){
-    console.log("Хоршо дорогой " +stats.className + " Чем тут будешь заниматься");
+    console.log("Хоршо Чем тут будешь заниматься");
     rl.question ("Можешь отправиться в лес , в горы , или хочешь сохраниться\n1.Лес\n2.Горы\n3.Сохранение ",(Nextstapchar)=>{
         const choise = Number(Nextstapchar);
     switch(choise){
         case 1: 
-        console.log("Хорошо вот эта тропинка ведет в лес удачи тебе ",stats.className);
+        console.log("Хорошо вот эта тропинка ведет в лес удачи тебе ",player.className);
         break;
         case 2:
-            console.log("Хорошо вот эта тропинка ведет в горы удачи тебе ",stats.className);
+            console.log("Хорошо вот эта тропинка ведет в горы удачи тебе ",player.className);
             break;
         case 3: 
-            saveprogres();
+        saveprogres();
             break;
         default:
             console.log("От 1 до 3");
